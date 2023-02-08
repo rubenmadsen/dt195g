@@ -31,6 +31,7 @@ int main(int argc, char **argv){
     bool shouldWait = true;
     pid_t id;
     do{
+        unsigned int count = 0;
         // Get input and make strtok backup
         char **args;
         PROMPT;
@@ -61,7 +62,7 @@ int main(int argc, char **argv){
         }
         // History
 //        else if(strncmp(input,"history",7) == 0){
-        else if(input[0] == 'h'){
+        else if(input[0] == 'h' || strncmp(input,"history",7) == 0){
             printf("history\n");
             H_item *cur = head;
             int index = 1;
@@ -73,6 +74,7 @@ int main(int argc, char **argv){
             continue;
         }
         // Input
+
         else {
             if (input[strlen(input) - 1] == '\n') {
                 input[strlen(input) - 1] = '\0';
@@ -80,13 +82,21 @@ int main(int argc, char **argv){
             char input_str[MAX_INPUT];
             strcpy(input_str, input);
             history(strdup(input_str));
-            unsigned int count = 0;
+            //unsigned int count = 0;
             char *arg = strtok(input_str, " ");
             while (arg != NULL) {
                 count++;
                 arg = strtok(NULL, " ");
             }
             count++;
+            char *ampersand = strstr(input_str,"&");
+            if(ampersand == NULL){
+                shouldWait = false;
+            }
+            else{
+                shouldWait = true;
+            }
+
             args = malloc(sizeof(char *) * count);
             arg = strtok(input, " ");
             unsigned int c = 0;
@@ -97,9 +107,9 @@ int main(int argc, char **argv){
                 c++;
             }
             args[c] = NULL;
-//        for(int i=0; i<count; i++){
-//            printf("%d -> [%s]\n",i, args[i]);
-//        }
+        for(int i=0; i<count; i++){
+            printf("%d -> [%s]\n",i, args[i]);
+        }
         }
 
         id = fork();
@@ -109,12 +119,21 @@ int main(int argc, char **argv){
         if(id == 0){
             printf("execvp -> %s\n",input);
             //execvp(args[0],((char *const*)args));
+
             exit(EXIT_SUCCESS);
         }
+        // free args array
+        for(int i=0; i<count; i++){
+            free(args[i]);
+            args[i] = NULL;
+        }
+        free(args);
+        args = NULL;
         historyCounter++;
     } while (strncmp(input,"quit",4) != 0);
 
     if(id != 0 && shouldWait == true){
+
         wait(&status);
     }
     clearHistory();
