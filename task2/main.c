@@ -9,21 +9,15 @@
 #include <sys/wait.h>
 #include <string.h>
 #include <sys/resource.h>
+#include <sys/mman.h>
 #include <time.h>
+#include <math.h>
+
+unsigned int *shared_total;
 
 unsigned int findStrInStr(char *head, char *end, char *str);
-int main(int argc, char ** argv){
-    //uint64_t *shared_results = mmap(NULL,facs*sizeof(uint64_t),PROT_READ | PROT_WRITE,MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-
-    struct rlimit limit;
-    getrlimit (RLIMIT_STACK, &limit);
-    printf ("\nStack Limit = %ld and %ld max\n", limit.rlim_cur, limit.rlim_max);
-    bool isParent = false;
-    //
-    clock_t tos = clock();
-    unsigned int *total;
-    total = malloc(sizeof(unsigned int));
-    *total = 0;
+int main(int argc, char **argv){
+    shared_total  = mmap(NULL,sizeof(unsigned int),PROT_READ | PROT_WRITE,MAP_SHARED | MAP_ANONYMOUS, -1, 0);
     FILE *fileptr;
     size_t fsize;
     fileptr = fopen(argv[1],"r");
@@ -39,15 +33,16 @@ int main(int argc, char ** argv){
     char bytes[fsize];
     fread(bytes,1,fsize,fileptr);
     printf("Searching '%s' for '%s'\n",argv[1],argv[2]);
-//    findStrInStr(bytes,bytes+part,argv[2]);
-//    findStrInStr(bytes,bytes+part,argv[2]);
 
     // start forking disaster
     for (int i = 0; i < 4; i++) {
         pid_t pid = fork();
         if (pid == 0) {
             // childs
-            *total += findStrInStr(bytes+(part*i),bytes+part+(part*i),argv[2]);
+            int extended = (int)ceil((double)strlen(argv[2])/2);
+            char *head = bytes+(part*i);
+            char *end = bytes+part+(part*i) + extended;
+            *shared_total += findStrInStr(head,end,argv[2]);
 
             exit(0);
         }
@@ -55,19 +50,13 @@ int main(int argc, char ** argv){
     // wait for morons
     for (int i = 0; i < 4; i++) {
         pid_t pid = wait(NULL);
-        printf("Process %d is terminated.\n", pid);
+        //printf("Process %d is terminated.\n", pid);
     }
-    printf("Found: %d results\n",*total);
-    clock_t toe = clock();
-    double elapsed_time = (double)(toe - tos) / CLOCKS_PER_SEC;
-    printf("Total time: %f ms\n", elapsed_time);
+    printf("\nFound: %d results\n",*shared_total);
     return 0;
 }
 unsigned int findStrInStr(char *head, char *end, char *str){
-    clock_t start = clock();
     unsigned int found = 0;
-    //char *head = text;
-    //char *end = text+strlen(text);
     int row = 0;
     int col = 0;
     pid_t main = getpid();
@@ -76,7 +65,7 @@ unsigned int findStrInStr(char *head, char *end, char *str){
 
         while(tail != end) {
             if (strncmp(head, str, len) == 0) {
-                //printf("Text found row %6d col %3d\n", row, col);
+                printf("Text found row %6d col %3d\n", row, col);
                 //return;
                 found++;
             }
@@ -88,10 +77,5 @@ unsigned int findStrInStr(char *head, char *end, char *str){
             head++;
             tail++;
         }
-    //printf("found %d\n",found);
-    clock_t ending = clock();
-    double elapsed_time = (double)(ending - start) / CLOCKS_PER_SEC;
-    printf("Elapsed time: %fs\n", elapsed_time);
-    return found;
-    //printf("Text not found\n");
+        return found;
 }
