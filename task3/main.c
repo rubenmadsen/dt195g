@@ -19,6 +19,10 @@ uint64_t factorial(int f){
 int main(int argc, char* args[]) {
 
     int facs = atoi(args[1]);
+    if(facs <= 0){
+        printf("%s <positive number>\n",args[0]);
+        exit(-1);
+    }
     pid_t id = fork();
     uint64_t sums[facs];
     //sums[0] = 1;
