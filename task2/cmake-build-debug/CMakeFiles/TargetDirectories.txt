@@ -1,3 +1,0 @@
-/home/ruben/c/dt195g/task2/cmake-build-debug/CMakeFiles/task2.dir
-/home/ruben/c/dt195g/task2/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/ruben/c/dt195g/task2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
