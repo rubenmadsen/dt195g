@@ -5,5 +5,3 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(task1
         prog.c)
-add_executable(anton
-        anton.c)

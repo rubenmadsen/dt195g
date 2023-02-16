@@ -51,10 +51,11 @@ int main(int argc, char **argv) {
                 //DONE Get history number n
                 char num = 0;
                 int h_val = (int) strtol(&num, NULL, 10);
+
                 h_val--;
                 char *h = getHistoryItem(&h_val);
                 if(h == NULL){
-                    printf("History does not exist.\n");
+                    printf("No commands in history.\n");
                     continue;
                 }
 //                printf("History: %d %s\n",h_val+1,h);
@@ -77,17 +78,15 @@ int main(int argc, char **argv) {
         else if (input[0] == 'h' || strncmp(input, "history", 7) == 0) {
             printf("history\n");
             H_item *cur = head;
-            int index = 1;
-            while (cur != NULL) {
-                printf("%d %s\n", index, cur->arg);
+            int index = 0;
+            while (cur != NULL && index < MAX_HISTORY) {
+                printf("%d %s\n", index+1, cur->arg);
                 cur = cur->next;
                 index++;
             }
             continue;
         }
             // InputTas
-
-
             if (input[strlen(input) - 1] == '\n') {
                 input[strlen(input) - 1] = '\0';
             }

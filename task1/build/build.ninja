@@ -71,37 +71,6 @@ build task1: C_EXECUTABLE_LINKER__task1_Debug CMakeFiles/task1.dir/prog.c.o
   TARGET_FILE = task1
   TARGET_PDB = task1.dbg
 
-# =============================================================================
-# Object build statements for EXECUTABLE target anton
-
-
-#############################################
-# Order-only phony target for anton
-
-build cmake_object_order_depends_target_anton: phony || CMakeFiles/anton.dir
-
-build CMakeFiles/anton.dir/anton.c.o: C_COMPILER__anton_Debug /home/ruben/c/dt195g/task1/anton.c || cmake_object_order_depends_target_anton
-  DEP_FILE = CMakeFiles/anton.dir/anton.c.o.d
-  FLAGS = -g -std=gnu11
-  OBJECT_DIR = CMakeFiles/anton.dir
-  OBJECT_FILE_DIR = CMakeFiles/anton.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target anton
-
-
-#############################################
-# Link the executable anton
-
-build anton: C_EXECUTABLE_LINKER__anton_Debug CMakeFiles/anton.dir/anton.c.o
-  FLAGS = -g
-  OBJECT_DIR = CMakeFiles/anton.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = anton
-  TARGET_PDB = anton.dbg
-
 
 #############################################
 # Utility command for edit_cache
@@ -137,7 +106,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 #############################################
 # Folder: /home/ruben/c/dt195g/task1/build
 
-build all: phony task1 anton
+build all: phony task1
 
 # =============================================================================
 # Built-in targets
