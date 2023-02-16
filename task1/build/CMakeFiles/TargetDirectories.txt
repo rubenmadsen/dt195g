@@ -1,3 +1,4 @@
 /home/ruben/c/dt195g/task1/build/CMakeFiles/task1.dir
+/home/ruben/c/dt195g/task1/build/CMakeFiles/anton.dir
 /home/ruben/c/dt195g/task1/build/CMakeFiles/edit_cache.dir
 /home/ruben/c/dt195g/task1/build/CMakeFiles/rebuild_cache.dir

@@ -17,7 +17,6 @@ uint64_t factorial(int f){
     return sum;
 }
 int main(int argc, char* args[]) {
-
     int facs = atoi(args[1]);
     if(facs <= 0){
         printf("%s <positive number>\n",args[0]);

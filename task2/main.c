@@ -11,9 +11,10 @@
 #include <sys/resource.h>
 #include <sys/mman.h>
 #include <time.h>
-#include <math.h>
+
 
 unsigned int *shared_total;
+char *bytes;
 
 unsigned int findStrInStr(char *head, char *end, char *str);
 int main(int argc, char **argv){
@@ -30,8 +31,10 @@ int main(int argc, char **argv){
     rewind(fileptr);
     printf("opened file (%zu bytes) ",fsize);
     size_t part = fsize/4;
-    char bytes[fsize];
+    //char bytes[fsize];
+    bytes  = mmap(NULL,sizeof(char) * fsize,PROT_READ | PROT_WRITE,MAP_SHARED | MAP_ANONYMOUS, -1, 0);
     fread(bytes,1,fsize,fileptr);
+    fclose(fileptr);
     printf("Searching '%s' for '%s'\n",argv[1],argv[2]);
 
     // start forking disaster
@@ -39,7 +42,7 @@ int main(int argc, char **argv){
         pid_t pid = fork();
         if (pid == 0) {
             // childs
-            int extended = (int)ceil((double)strlen(argv[2])/2);
+            int extended = (int)(strlen(argv[2])/2) + (int)strlen(argv[2])%2;
             char *head = bytes+(part*i);
             char *end = bytes+part+(part*i) + extended;
             *shared_total += findStrInStr(head,end,argv[2]);
